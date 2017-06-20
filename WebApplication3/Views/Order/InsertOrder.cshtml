@@ -1,0 +1,129 @@
+﻿@model WebApplication3.Models.Order
+
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <title>InsertOrder</title>
+</head>
+<body>
+@using (Html.BeginForm("InsertOrder", "Order", FormMethod.Post, new { id = "form2" }))
+{
+
+        <div class="basicgrid">
+         <h1>訂單查詢</h1>
+
+            <table>
+                <tr>
+                    <td>客戶名稱 @Html.DropDownListFor(model => model.CustomerID, (List<SelectListItem>)@ViewBag.companyname)</td>
+                </tr>
+                <tr>
+                    <td>負責員工名稱 @Html.DropDownListFor(model => model.EmployeeID, (List<SelectListItem>)@ViewBag.employeename)</td>
+                </tr>
+                <tr>
+                    <td>訂單日期 @Html.TextBoxFor(model => model.Orderdate, new { @type = "date" })</td>
+                </tr>
+                <tr>
+                    <td>需要日期 @Html.TextBoxFor(model => model.RequireDdate, new { @type = "date" })</td>
+                </tr>
+                <tr>
+                    <td>出貨日期 @Html.TextBoxFor(model => model.ShippedDate, new { @type = "date" })</td>
+                </tr>
+                <tr>
+                    <td>出貨公司名稱 @Html.DropDownListFor(model => model.ShipperID, (List<SelectListItem>)@ViewBag.shippername)</td>
+                </tr>
+                <tr>
+                    <td>運費  @Html.TextBoxFor(model => model.Freight)</td>
+                </tr>
+                <tr>
+                    <td>出貨國家  @Html.TextBoxFor(model => model.ShipCountry)</td>
+                </tr>
+                <tr>
+                    <td>出貨城市  @Html.TextBoxFor(model => model.ShipCity)</td>
+                </tr>
+                <tr>
+                    <td>出貨地區  @Html.TextBoxFor(model => model.ShipRegion)</td>
+                </tr>
+                <tr>
+                    <td>郵遞區號  @Html.TextBoxFor(model => model.ShipPostalCode)</td>
+                </tr>
+                <tr>
+                    <td>出貨地址  @Html.TextBoxFor(model => model.ShipAddress)</td>
+                </tr>
+                <tr>
+                    <td>出貨說明  @Html.TextBoxFor(model => model.ShipName)</td>
+                </tr>
+                <tr>
+                    <td>訂單金額總計</td>
+                </tr>
+                <tr>
+                    <td><input type="submit" value="存檔" />@Html.ActionLink("Back to List", "Index")</td>
+                </tr>
+            </table>
+            </div>
+            <div class="basicgrid">
+            <h1>訂單明細</h1>
+            <a id="addNewDetial" href="#">新增一筆</a>
+            <table>
+                <tr>
+                    <td>商品</td>
+                    <td>單價</td>
+                    <td>數量</td>
+                    <td>小計</td>
+                    <td></td>
+                </tr>
+                <tbody id="tbContent">
+
+                    @for (int i = 0; i < Model.OrderDetails.Count; i++)
+                    {
+                        <tr>
+                            <td>@Html.DropDownListFor(m => Model.OrderDetails[i].ProductID, (List<SelectListItem>)ViewBag.productname, new { @class = "ProductID" })</td>
+                            <td>@Html.TextBoxFor(m => Model.OrderDetails[i].UnitPrice, new { @class = "UnitPrice" })</td>
+                            <td>@Html.TextBoxFor(m => Model.OrderDetails[i].Qty, new { @class = "Qty" })</td>
+                            <td>小計</td>
+                            <td><button type="button" class="btnRemove">取消</button></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>  
+        <script type="text/javascript">
+        //取得明細資料
+        var trtemplate = $('#tbContent tr').eq(0).html();
+
+        //新增一列名資料
+        $("#addNewDetial").click(function (e) {
+            $('#tbContent').append('<tr>' + trtemplate + '</tr>');
+            $(".btnRemove").kendoButton();
+        });
+
+        //移除TR
+        $('#tbContent').on('click', '.btnRemove', function () {
+            if ($('#tbContent tr').length > 1)
+                $(this).closest('tr').remove();
+        });
+
+        //表單送出前置換element name 讓Action 可以讀到OrderDetials
+        $('form').submit(function () {
+            for (var i = 0 ; i < $('#tbContent tr').length; i++) {
+                $('.ProductID').eq(i).attr('name', 'OrderDetails[' + i + '].ProductID');
+                $('.Qty').eq(i).attr('name', 'OrderDetails[' + i + '].Qty');
+                $('.UnitPrice').eq(i).attr('name', 'OrderDetails[' + i + '].UnitPrice');
+            }
+        });
+            </script>
+                </div>     
+        
+}
+
+</body>
+</html>
+

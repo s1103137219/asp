@@ -1,0 +1,85 @@
+﻿
+@model WebApplication3.Models.OrderSearchArg
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+   @using (Html.BeginForm("Index", "Order", FormMethod.Post, new { id = "form1" }))
+   {
+
+    <div>
+        <div id="SearchConditionSection" class="basicgrid">
+            <h1>訂單查詢</h1>
+
+            <table>
+                <tr>
+                    <td>訂單編號 @Html.TextBoxFor(model => model.OrderID)</td>
+                </tr>
+                <tr>
+                    <td>客戶名稱 @Html.TextBoxFor(model => model.CompanyName)</td>
+                </tr>
+                <tr>
+                    <td>負責員工 @Html.DropDownListFor(model => model.EmployeeID, (List<SelectListItem>)@ViewBag.employeename)</td>
+                </tr>
+                <tr>
+                    <td>出貨公司 @Html.DropDownListFor(model => model.ShipperID, (List<SelectListItem>)@ViewBag.shippername)</td>
+                </tr>
+                <tr>
+                    <td>訂購日期 @Html.TextBoxFor(model => model.Orderdate, new { @type = "date" })</td>
+                </tr>
+                <tr>
+                    <td>出貨日期 @Html.TextBoxFor(model => model.ShippedDate, new { @type = "date" })</td>
+                </tr>
+                <tr>
+                    <td>需要日期 @Html.TextBoxFor(model => model.RequireDdate, new { @type = "date" })</td>
+                </tr>
+                <tr>
+                    <td><input type="submit" value="查詢" class="basicbtn" /><input type="reset" value="清除" class="basicbtn" />@Html.ActionLink("新增訂單", "InsertOrder")</td>
+                </tr>
+            </table>
+
+        </div>
+        <div id="SearchResultSection" class="basicgrid">
+            <div id="grid" class="basicgrid"></div>
+            <h1>查詢結果</h1>
+            @if (ViewBag.Data != null)
+            {
+                <table>
+                    <tr>
+                        <td>OrderID</td>
+                        <td>CustomerName</td>
+                        <td>OrderDate</td>
+                        <td>ShippedDate</td>
+                        <td>修改</td>
+                        <td>刪除</td>
+
+                    </tr>
+
+                    @foreach (var item in (List<WebApplication3.Models.Order>)ViewBag.Data)
+                    {
+                        <tr>
+                            <td>@item.OrderID</td>
+                            <td>@item.CompanyName</td>
+                            <td>@item.Orderdate</td>
+                            <td>@item.ShippedDate</td>
+                            <td><button type="submit" class="basicbtn" name="editbtn" value="@item.OrderID">修改</button></td>
+                            <td><button type="submit" class="basicbtn" name="delbtn" value="@item.OrderID">刪除</button></td>
+                        </tr>
+                    }
+
+
+                </table>
+            }
+            else
+            {
+                <div>查無資料</div>
+            }
+        </div>
+
+
+
+
+    </div>
+      
+            }
